@@ -56,7 +56,6 @@ public class ASGIPs {
                 }
             }
             return instanceprivateip;
-
         } catch (Ec2Exception e) {
             System.err.println(e.awsErrorDetails().errorCode());
             System.exit(1);
@@ -76,9 +75,11 @@ public class ASGIPs {
             List<AutoScalingGroup> groups = response.autoScalingGroups();
             for (AutoScalingGroup group : groups) {
                 List<Instance> instances = group.instances();
-                System.out.println("groups" + group);
+    
                 for (Instance instance : instances) {
-                    instanceIPs.add(describeEC2Instances(ec2, instance.instanceId()));
+                	if (instance.healthStatus().toLowerCase().equals("healthy")) {
+                			instanceIPs.add(describeEC2Instances(ec2, instance.instanceId()));
+                	}
                 }
             }
             return instanceIPs;
